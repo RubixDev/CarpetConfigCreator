@@ -1,24 +1,45 @@
-const urls = {
+const excludedCategories = ['rug', 'extras']
+
+const modInfo = {
     carpet: {
         url: 'https://raw.githubusercontent.com/wiki/gnembon/fabric-carpet/Current-Available-Settings.md',
-        splitString: '##'
+        splitString: '##',
+        name: 'Carpet'
     },
     carpetExtra: {
         url: 'https://raw.githubusercontent.com/gnembon/carpet-extra/master/README.md',
-        splitString: '##'
+        splitString: '##',
+        name: 'Carpet Extra'
     },
     rug: {
         url: 'https://raw.githubusercontent.com/RubixDev/fabric-rug/1.17/README.md',
-        splitString: '###'
+        splitString: '###',
+        name: 'Rug'
     }
 }
 
 let defaultValues = {}
 
-let rules = {
-    carpet: {},
-    carpetExtra: {},
-    rug: {}
+let data = {}
+
+class Mod {
+    constructor(id, name, rules) {
+        this.id = id
+        this.name = name
+        this.rules = rules
+    }
+
+    getCategories() {
+        let categories = []
+        for (const rule of this.rules.values()) {
+            for (const category of rule.categories) {
+                if (!categories.includes(category)) {
+                    categories.push(category)
+                }
+            }
+        }
+        return categories
+    }
 }
 
 class Rule {
@@ -66,38 +87,100 @@ class Rule {
             .replaceAll(' ', '')
             .toLowerCase()
             .split(',')
-            .filter(category => !['rug', 'extras'].includes(category))  // Filter out whole mod categories
+            .filter(category => !excludedCategories.includes(category))  // Filter out categories of whole mods
             .map(category => category.charAt(0).toUpperCase() + category.slice(1))  // Capitalize every first letter
 
         return new Rule(type, name, value, options, strict, categories)
     }
 }
 
+function getSelectedMod() {
+    for (const modId of data.keys()) {
+        if (document.getElementById(modId).checked) return data[modId]
+    }
+    return false
+}
+
 window.onload = async function () {
-    for (const [modname, mod] of urls.entries()) {
+    // Parse markdown rule lists
+    for (const [modId, mod] of modInfo.entries()) {
+        data[modId] = new Mod(modId, mod.name, {})
         await fetch(mod.url)
             .then(r => r.text())
             .then(r => {
                 for (const rule of r.split(mod.splitString + ' ').slice(1)) {
                     const parsedRule = Rule.fromMarkdown(rule)
-                    rules[modname][parsedRule.name] = parsedRule
+                    data[modId].rules[parsedRule.name] = parsedRule
                 }
             })
-        rules[modname] = rules[modname].sorted()
+        data[modId].rules = data[modId].rules.sorted()
     }
-    print(rules)
-    for (const mod of rules.values()) {
-        for (const rule of mod.values()) {
+    print(data)
+    for (const mod of data.values()) {
+        for (const rule of mod.rules.values()) {
             defaultValues[rule.name] = rule.value
         }
     }
     defaultValues = defaultValues.sorted()
     print(defaultValues)
+
+    // Create radio buttons for the mods
+    const radioButtons = document.getElementById('radioButtons')
+    const modButtonDiv = radioButtons.firstElementChild
+    const categoryButtonDiv = radioButtons.lastElementChild
+
+    for (let modIndex = 0; modIndex < data.keys().length; modIndex++) {
+        const mod = data[data.keys()[modIndex]]
+
+        const input = document.createElement('input')
+        input.type = 'radio'
+        input.id = mod.id
+        input.name = 'mod'
+        if (modIndex === 0) input.setAttribute('checked', '')
+        modButtonDiv.appendChild(input)
+
+        const label = document.createElement('label')
+        label.htmlFor = mod.id
+        label.innerText = mod.name
+        modButtonDiv.appendChild(label)
+    }
+
+    // Create radio buttons for the categories
+    const modCategories = getSelectedMod().getCategories()
+
+    const allCategoriesInput = document.createElement('input')
+    allCategoriesInput.type = 'radio'
+    allCategoriesInput.id = 'all'
+    allCategoriesInput.name = 'category'
+    allCategoriesInput.setAttribute('checked', '')
+    categoryButtonDiv.appendChild(allCategoriesInput)
+
+    const allCategoriesLabel = document.createElement('label')
+    allCategoriesLabel.htmlFor = 'all'
+    allCategoriesLabel.innerText = 'All'
+    categoryButtonDiv.appendChild(allCategoriesLabel)
+
+    for (let categoryIndex = 0; categoryIndex < modCategories.length; categoryIndex++) {
+        const category = modCategories[categoryIndex]
+
+        const input = document.createElement('input')
+        input.type = 'radio'
+        input.id = category.toLowerCase()
+        input.name = 'category'
+        categoryButtonDiv.appendChild(input)
+
+        const label = document.createElement('label')
+        label.htmlFor = category.toLowerCase()
+        label.innerText = category
+        categoryButtonDiv.appendChild(label)
+    }
 }
 
 
 // Helper functions
-function print(...data) { console.log(...data) }
+function print(...data) {
+    console.log(...data)
+}
 
 Object.prototype.entries = function () {
     return Object.entries(this)
