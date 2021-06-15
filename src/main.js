@@ -46,8 +46,7 @@ window.onload = async function () {
     print(defaultValues)
 
     // Create radio buttons for the mods
-    const radioButtons = document.getElementById('radioButtons')
-    const modButtonDiv = radioButtons.firstElementChild
+    const modButtonDiv = document.getElementById('radioButtons').firstElementChild
 
     for (let modIndex = 0; modIndex < data.keys().length; modIndex++) {
         const mod = data[data.keys()[modIndex]]
@@ -69,6 +68,32 @@ window.onload = async function () {
 
     // Create radio buttons for the categories
     updateCategories()
+
+    // Create list with rules
+    updateRuleList()
+}
+
+function getSelectedMod() {
+    for (const modId of data.keys()) {
+        if (document.getElementById(modId).checked) return data[modId]
+    }
+    return null
+}
+
+function getSelectedCategory() {
+    for (const category of getSelectedMod().getCategories()) {
+        if (document.getElementById(category.toLowerCase()).checked) return category
+    }
+    if (document.getElementById('all').checked) return 'all'
+    return null
+}
+
+function addRadioChangeListener(radioButtons, func) {
+    for (const radioButton of radioButtons) {
+        radioButton.addEventListener('click', function () {
+            func()
+        })
+    }
 }
 
 function updateCategories() {
@@ -102,6 +127,25 @@ function updateCategories() {
         label.htmlFor = category.toLowerCase()
         label.innerText = category
         categoryButtonDiv.appendChild(label)
+    }
+    addRadioChangeListener(document.getElementsByName('category'), updateRuleList)
+    updateRuleList()
+}
+
+function updateRuleList() {
+    const ruleListDiv = document.getElementById('ruleList')
+    ruleListDiv.innerHTML = ''
+    const selectedCategory = getSelectedCategory()
+
+    for (const rule of getSelectedMod().rules.values()) {
+        if (selectedCategory !== 'all' && rule.categories.includes(selectedCategory)) continue
+
+        const ruleDiv = document.createElement('div')
+        const ruleNameSpan = document.createElement('span')
+        ruleNameSpan.innerText = rule.name
+        ruleDiv.appendChild(ruleNameSpan)
+
+        ruleListDiv.appendChild(ruleDiv)
     }
 }
 
@@ -174,21 +218,6 @@ class Rule {
             .map(category => category.charAt(0).toUpperCase() + category.slice(1))  // Capitalize every first letter
 
         return new Rule(type, name, value, options, strict, categories)
-    }
-}
-
-function getSelectedMod() {
-    for (const modId of data.keys()) {
-        if (document.getElementById(modId).checked) return data[modId]
-    }
-    return false
-}
-
-function addRadioChangeListener(radioButtons, func) {
-    for (const radioButton of radioButtons) {
-        radioButton.addEventListener('click', function () {
-            func()
-        })
     }
 }
 
