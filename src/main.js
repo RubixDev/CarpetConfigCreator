@@ -133,19 +133,19 @@ function updateCategories() {
 }
 
 function updateRuleList() {
-    const ruleListDiv = document.getElementById('ruleList')
-    ruleListDiv.innerHTML = ''
+    const ruleList = document.getElementById('ruleList')
+    ruleList.innerHTML = ''
     const selectedCategory = getSelectedCategory()
 
     for (const rule of getSelectedMod().rules.values()) {
-        if (selectedCategory !== 'all' && rule.categories.includes(selectedCategory)) continue
+        if (selectedCategory !== 'all' && !rule.categories.includes(selectedCategory)) continue
 
-        const ruleDiv = document.createElement('div')
+        const ruleListItem = document.createElement('li')
         const ruleNameSpan = document.createElement('span')
         ruleNameSpan.innerText = rule.name
-        ruleDiv.appendChild(ruleNameSpan)
+        ruleListItem.appendChild(ruleNameSpan)
 
-        ruleListDiv.appendChild(ruleDiv)
+        ruleList.appendChild(ruleListItem)
     }
 }
 
