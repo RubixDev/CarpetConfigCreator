@@ -83,24 +83,39 @@ window.onload = async function () {
                     rules[modname][parsedRule.name] = parsedRule
                 }
             })
+        rules[modname] = rules[modname].sorted()
     }
-    console.log(rules)
+    print(rules)
     for (const mod of rules.values()) {
         for (const rule of mod.values()) {
             defaultValues[rule.name] = rule.value
         }
     }
-    console.log(defaultValues)
+    defaultValues = defaultValues.sorted()
+    print(defaultValues)
 }
 
 
-// Prototypes
+// Helper functions
+function print(...data) { console.log(...data) }
+
 Object.prototype.entries = function () {
     return Object.entries(this)
 }
 
 Object.prototype.values = function () {
     return Object.values(this)
+}
+
+Object.prototype.keys = function () {
+    return Object.keys(this)
+}
+
+Object.prototype.sorted = function () {
+    return this.keys().sort().reduce((obj, key) => {
+            obj[key] = this[key]
+            return obj
+        }, {})
 }
 
 Array.prototype.last = function () {
