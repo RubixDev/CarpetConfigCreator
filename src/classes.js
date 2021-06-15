@@ -35,6 +35,7 @@ class Rule {
             .split('\n')[0]
             .replaceAll('`', '')
             .replaceAll(' ', '')
+            .toLowerCase()
         let name = markdown
             .split('\n')[0]
         let value = markdown
@@ -43,6 +44,7 @@ class Rule {
             .split('\n')[0]
             .replaceAll('`', '')
             .replaceAll(' ', '')
+            .toLowerCase()
         let options = markdown
             .split('options: ')
             .last()

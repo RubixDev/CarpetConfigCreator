@@ -36,14 +36,14 @@ window.onload = async function () {
             })
         data[modId].rules = data[modId].rules.sorted()
     }
-    print(data)
+    print('Parsed data', data)
     for (const mod of data.values()) {
         for (const rule of mod.rules.values()) {
             defaultValues[rule.name] = rule.value
         }
     }
     defaultValues = defaultValues.sorted()
-    print(defaultValues)
+    print('Parsed default values', defaultValues)
 
     // Create radio buttons for the mods
     const modButtonDiv = document.getElementById('radioButtons').firstElementChild
@@ -118,10 +118,89 @@ function updateRuleList() {
         if (selectedCategory !== 'all' && !rule.categories.includes(selectedCategory)) continue
 
         const ruleListItem = document.createElement('li')
+
         const ruleNameSpan = document.createElement('span')
         ruleNameSpan.innerText = rule.name
         ruleListItem.appendChild(ruleNameSpan)
 
+        const ruleDefaultValueSpan = document.createElement('span')
+        ruleDefaultValueSpan.innerText = 'Default value: ' + rule.value
+        ruleListItem.appendChild(ruleDefaultValueSpan)
+
+        const ruleValueInput = createRuleInputElement(rule)
+        ruleListItem.appendChild(ruleValueInput)
+
         ruleList.appendChild(ruleListItem)
     }
+}
+
+function createRuleInputElement(rule) {
+    let input
+
+    if (rule.isStrict) {
+        switch (rule.type) {
+            case 'boolean':
+                input = document.createElement('input')
+                input.type = 'checkbox'
+                //input.id = rule.name + '__input'
+                if (rule.value === 'true') input.setAttribute('checked', '')
+                break
+            case 'int':
+            case 'double':
+            case 'string':
+                input = document.createElement('select')
+                for (const option of rule.options) {
+                    const optionElement = document.createElement('option')
+                    optionElement.innerText = option
+                    if (rule.value === option.toLowerCase()) optionElement.setAttribute('selected', '')
+                    input.appendChild(optionElement)
+                }
+                break
+            default:
+                input = document.createElement('span')
+                input.innerText = 'Unknown value type'
+                print('Unknown value type', rule)
+        }
+    } else {
+        const dataListsDiv = document.getElementById('dataLists')
+
+        switch (rule.type) {
+            case 'string':
+                input = document.createElement('span')
+
+                const inputSelect = document.createElement('select')
+                inputSelect.innerHTML += '<option value="custom">[type a custom value]</option>'
+                for (const option of rule.options) {
+                    const optionElement = document.createElement('option')
+                    optionElement.innerText = option
+                    if (rule.value === option.toLowerCase()) optionElement.setAttribute('selected', '')
+                    inputSelect.appendChild(optionElement)
+                }
+                input.appendChild(inputSelect)
+
+                const inputText = document.createElement('input')
+                inputText.type = 'text'
+                inputText.style.display = 'none'
+                inputText.setAttribute('disabled', '')
+                inputText.addEventListener('click', function () {
+                    if (inputText.value === '') toggleField(inputText, inputText.previousSibling)
+                })
+                inputText.addEventListener('blur', function () {
+                    if (inputText.value === '') toggleField(inputText, inputText.previousSibling)
+                })
+                input.appendChild(inputText)
+
+                inputSelect.addEventListener('change', function () {
+                    if (inputSelect.options[inputSelect.selectedIndex].value === 'custom') {
+                        toggleField(inputSelect, inputSelect.nextSibling)
+                    }
+                })
+                break
+            default:
+                input = document.createElement('span')
+                input.innerText = 'Unknown value type'
+        }
+    }
+
+    return input
 }
