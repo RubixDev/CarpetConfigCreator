@@ -121,7 +121,7 @@ class Mod {
                 }
             }
         }
-        return categories
+        return categories.sort()
     }
 }
 
