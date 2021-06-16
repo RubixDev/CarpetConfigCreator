@@ -232,15 +232,15 @@ function createRuleInputElement(rule) {
 }
 
 function exportConfigFile() {
-    let out = ''
+    const out = []
 
     for (const mod of data.values()) {
         for (const rule of mod.rules.values()) {
             if (rule.value === defaultValues[rule.name]) continue
-            out += `${rule.name} ${rule.value}\n`
+            out.push(`${rule.name} ${rule.value}`)
         }
     }
 
-    print(out.slice(0, -1))
-    downloadTextFile('carpet.conf', out.slice(0, -1))
+    print(out.sort().join('\n'))
+    downloadTextFile('carpet.conf', out.join('\n'))
 }
