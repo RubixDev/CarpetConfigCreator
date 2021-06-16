@@ -50,8 +50,8 @@ class Rule {
             .last()
             .split('\n')[0]
             .replaceAll('`', '')
-            .replaceAll(' ', '')
-            .split(',')
+            .split(', ')
+            .map(option => option.replaceAll(' ', ''))
             .filter(option => option.length > 0)
         let strict = markdown
             .split(' options')[0]
