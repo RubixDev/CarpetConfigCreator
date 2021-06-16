@@ -35,14 +35,6 @@ function addRadioChangeListener(radioButtons, func) {
     }
 }
 
-function toggleField(hideObject, showObject) {
-    hideObject.disabled = true
-    hideObject.style.display = 'none'
-    showObject.disabled = false
-    showObject.style.display = 'inline'
-    showObject.focus()
-}
-
 // Website specific
 function getSelectedMod() {
     for (const modId of data.keys()) {

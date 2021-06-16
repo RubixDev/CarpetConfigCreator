@@ -52,6 +52,7 @@ class Rule {
             .replaceAll('`', '')
             .replaceAll(' ', '')
             .split(',')
+            .filter(option => option.length > 0)
         let strict = markdown
             .split(' options')[0]
             .split(' ')

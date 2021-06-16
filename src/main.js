@@ -137,12 +137,32 @@ function updateRuleList() {
 function createRuleInputElement(rule) {
     let input
 
-    if (rule.isStrict) {
+    if (!['int', 'double', 'string', 'boolean'].includes(rule.type)) {
+        input = document.createElement('span')
+        input.innerText = 'Unknown value type'
+        print('Unknown value type', rule)
+        return input
+    }
+
+    if (rule.options.length === 0) {
+        input = document.createElement('input')
+        switch (rule.type) {
+            case 'string':
+                input.type = 'text'
+                break
+            case 'double':
+                input.type = 'number'
+                input.step = '0.1'
+                break
+            default:
+                input.type = 'number'
+                break
+        }
+    } else if (rule.isStrict) {
         switch (rule.type) {
             case 'boolean':
                 input = document.createElement('input')
                 input.type = 'checkbox'
-                //input.id = rule.name + '__input'
                 if (rule.value === 'true') input.setAttribute('checked', '')
                 break
             case 'int':
@@ -156,50 +176,39 @@ function createRuleInputElement(rule) {
                     input.appendChild(optionElement)
                 }
                 break
-            default:
-                input = document.createElement('span')
-                input.innerText = 'Unknown value type'
-                print('Unknown value type', rule)
         }
     } else {
-        const dataListsDiv = document.getElementById('dataLists')
+        input = document.createElement('span')
 
+        const inputSelect = document.createElement('select')
+        inputSelect.innerHTML += '<option value="custom">[type a custom value]</option>'
+        for (const option of rule.options) {
+            const optionElement = document.createElement('option')
+            optionElement.innerText = option
+            if (new RegExp(`${option.toLowerCase()}([\.,]0+)?`).test(rule.value)) optionElement.setAttribute('selected', '')
+            inputSelect.appendChild(optionElement)
+        }
+        input.appendChild(inputSelect)
+
+        const inputText = document.createElement('input')
         switch (rule.type) {
             case 'string':
-                input = document.createElement('span')
-
-                const inputSelect = document.createElement('select')
-                inputSelect.innerHTML += '<option value="custom">[type a custom value]</option>'
-                for (const option of rule.options) {
-                    const optionElement = document.createElement('option')
-                    optionElement.innerText = option
-                    if (rule.value === option.toLowerCase()) optionElement.setAttribute('selected', '')
-                    inputSelect.appendChild(optionElement)
-                }
-                input.appendChild(inputSelect)
-
-                const inputText = document.createElement('input')
                 inputText.type = 'text'
-                inputText.style.display = 'none'
-                inputText.setAttribute('disabled', '')
-                inputText.addEventListener('click', function () {
-                    if (inputText.value === '') toggleField(inputText, inputText.previousSibling)
-                })
-                inputText.addEventListener('blur', function () {
-                    if (inputText.value === '') toggleField(inputText, inputText.previousSibling)
-                })
-                input.appendChild(inputText)
-
-                inputSelect.addEventListener('change', function () {
-                    if (inputSelect.options[inputSelect.selectedIndex].value === 'custom') {
-                        toggleField(inputSelect, inputSelect.nextSibling)
-                    }
-                })
+                break
+            case 'double':
+                inputText.type = 'number'
+                inputText.step = '0.1'
                 break
             default:
-                input = document.createElement('span')
-                input.innerText = 'Unknown value type'
+                inputText.type = 'number'
+                break
         }
+        inputText.disabled = true
+        input.appendChild(inputText)
+
+        inputSelect.addEventListener('change', function () {
+            inputText.disabled = inputSelect.options[inputSelect.selectedIndex].value !== 'custom'
+        })
     }
 
     return input
