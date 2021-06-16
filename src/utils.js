@@ -35,6 +35,16 @@ function addRadioChangeListener(radioButtons, func) {
     }
 }
 
+function downloadTextFile(filename, content) {
+    const temp = document.createElement('a')
+    temp.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)
+    temp.download = filename
+    temp.style.display = 'none'
+    document.body.appendChild(temp)
+    temp.click()
+    document.body.removeChild(temp)
+}
+
 // Website specific
 function getSelectedMod() {
     for (const modId of data.keys()) {
@@ -49,4 +59,10 @@ function getSelectedCategory() {
     }
     if (document.getElementById('all').checked) return 'all'
     return null
+}
+
+function setRuleValue(ruleName, value) {
+    if (value === '') return
+    data[getSelectedMod().id].rules[ruleName].value = value
+    print(`Set value of rule ${ruleName} to ${value}`)
 }

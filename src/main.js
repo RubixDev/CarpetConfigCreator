@@ -119,13 +119,13 @@ function updateRuleList() {
 
         const ruleListItem = document.createElement('li')
 
-        const ruleNameSpan = document.createElement('span')
-        ruleNameSpan.innerText = rule.name
-        ruleListItem.appendChild(ruleNameSpan)
+        const ruleNameElement = document.createElement('code')
+        ruleNameElement.innerText = rule.name
+        ruleListItem.appendChild(ruleNameElement)
 
-        const ruleDefaultValueSpan = document.createElement('span')
-        ruleDefaultValueSpan.innerText = 'Default value: ' + rule.value
-        ruleListItem.appendChild(ruleDefaultValueSpan)
+        const ruleDefaultValueElement = document.createElement('span')
+        ruleDefaultValueElement.innerText = 'Default value: ' + rule.value
+        ruleListItem.appendChild(ruleDefaultValueElement)
 
         const ruleValueInput = createRuleInputElement(rule)
         ruleListItem.appendChild(ruleValueInput)
@@ -158,12 +158,18 @@ function createRuleInputElement(rule) {
                 input.type = 'number'
                 break
         }
+        input.addEventListener('input', function () {
+            setRuleValue(rule.name, input.value)
+        })
     } else if (rule.isStrict) {
         switch (rule.type) {
             case 'boolean':
                 input = document.createElement('input')
                 input.type = 'checkbox'
                 if (rule.value === 'true') input.setAttribute('checked', '')
+                input.addEventListener('change', function () {
+                    setRuleValue(rule.name, input.checked)
+                })
                 break
             case 'int':
             case 'double':
@@ -175,6 +181,9 @@ function createRuleInputElement(rule) {
                     if (rule.value === option.toLowerCase()) optionElement.setAttribute('selected', '')
                     input.appendChild(optionElement)
                 }
+                input.addEventListener('change', function () {
+                    setRuleValue(rule.name, input.value)
+                })
                 break
         }
     } else {
@@ -207,9 +216,31 @@ function createRuleInputElement(rule) {
         input.appendChild(inputText)
 
         inputSelect.addEventListener('change', function () {
-            inputText.disabled = inputSelect.options[inputSelect.selectedIndex].value !== 'custom'
+            inputText.disabled = inputSelect.value !== 'custom'
+            if (inputSelect.value === 'custom') {
+                setRuleValue(rule.name, inputText.value)
+            } else {
+                setRuleValue(rule.name, inputSelect.value)
+            }
+        })
+        inputText.addEventListener('input', function () {
+            setRuleValue(rule.name, inputText.value)
         })
     }
 
     return input
+}
+
+function exportConfigFile() {
+    let out = ''
+
+    for (const mod of data.values()) {
+        for (const rule of mod.rules.values()) {
+            if (rule.value === defaultValues[rule.name]) continue
+            out += `${rule.name} ${rule.value}\n`
+        }
+    }
+
+    print(out.slice(0, -1))
+    downloadTextFile('carpet.conf', out.slice(0, -1))
 }
