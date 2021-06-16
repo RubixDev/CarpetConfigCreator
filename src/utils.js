@@ -66,3 +66,7 @@ function setRuleValue(ruleName, value) {
     data[getSelectedMod().id].rules[ruleName].value = value
     print(`Set value of rule ${ruleName} to ${value}`)
 }
+
+function getRuleValue(ruleName) {
+    return data[getSelectedMod().id].rules[ruleName].value
+}

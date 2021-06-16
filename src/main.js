@@ -7,7 +7,7 @@ const modInfo = {
         name: 'Carpet'
     },
     carpetExtra: {
-        url: 'https://raw.githubusercontent.com/gnembon/carpet-extra/master/README.md',
+        url: 'https://raw.githubusercontent.com/gnembon/carpet-extra/1.17/README.md',
         splitString: '##',
         name: 'Carpet Extra'
     },
@@ -124,7 +124,7 @@ function updateRuleList() {
         ruleListItem.appendChild(ruleNameElement)
 
         const ruleDefaultValueElement = document.createElement('span')
-        ruleDefaultValueElement.innerText = 'Default value: ' + rule.value
+        ruleDefaultValueElement.innerText = 'Default value: ' + defaultValues[rule.name]
         ruleListItem.appendChild(ruleDefaultValueElement)
 
         const ruleValueInput = createRuleInputElement(rule)
@@ -166,9 +166,9 @@ function createRuleInputElement(rule) {
             case 'boolean':
                 input = document.createElement('input')
                 input.type = 'checkbox'
-                if (rule.value === 'true') input.setAttribute('checked', '')
+                if (getRuleValue(rule.name) === 'true') input.setAttribute('checked', '')
                 input.addEventListener('change', function () {
-                    setRuleValue(rule.name, input.checked)
+                    setRuleValue(rule.name, input.checked.toString())
                 })
                 break
             case 'int':
@@ -178,7 +178,7 @@ function createRuleInputElement(rule) {
                 for (const option of rule.options) {
                     const optionElement = document.createElement('option')
                     optionElement.innerText = option
-                    if (rule.value === option.toLowerCase()) optionElement.setAttribute('selected', '')
+                    if (getRuleValue(rule.name) === option.toLowerCase()) optionElement.setAttribute('selected', '')
                     input.appendChild(optionElement)
                 }
                 input.addEventListener('change', function () {
@@ -191,10 +191,13 @@ function createRuleInputElement(rule) {
 
         const inputSelect = document.createElement('select')
         inputSelect.innerHTML += '<option value="custom">[type a custom value]</option>'
+        const customOption = document.createElement('option')
+        customOption.value = 'custom'
+        customOption.innerText = '[type a custom value]'
         for (const option of rule.options) {
             const optionElement = document.createElement('option')
             optionElement.innerText = option
-            if (new RegExp(`${option.toLowerCase()}([\.,]0+)?`).test(rule.value)) optionElement.setAttribute('selected', '')
+            if (new RegExp(`${option.toLowerCase()}([\.,]0+)?`).test(getRuleValue(rule.name))) optionElement.setAttribute('selected', '')
             inputSelect.appendChild(optionElement)
         }
         input.appendChild(inputSelect)
@@ -212,7 +215,12 @@ function createRuleInputElement(rule) {
                 inputText.type = 'number'
                 break
         }
-        inputText.disabled = true
+        if (!rule.options.includes(getRuleValue(rule.name))) {
+            customOption.setAttribute('selected', '')
+            inputText.value = getRuleValue(rule.name)
+        } else {
+            inputText.disabled = true
+        }
         input.appendChild(inputText)
 
         inputSelect.addEventListener('change', function () {
