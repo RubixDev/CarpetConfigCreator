@@ -183,7 +183,7 @@ class NonStrictInput {
     reset() {
         const inputElement = document.getElementById(this.ruleName + '__input')
         for (const option of inputElement.firstElementChild.children) {
-            option.selected = this.defaultValue === option.innerText.toLowerCase()
+            option.selected = new RegExp(`^${option.innerText.toLowerCase()}([\.,]0+)?$`).test(this.defaultValue)
         }
         inputElement.lastElementChild.disabled = true
     }
@@ -202,7 +202,7 @@ class NonStrictInput {
         for (const option of this.ruleOptions) {
             const optionElement = document.createElement('option')
             optionElement.innerText = option
-            if (new RegExp(`${option.toLowerCase()}([\.,]0+)?`).test(getRuleValue(ruleName))) optionElement.selected = true
+            if (new RegExp(`^${option.toLowerCase()}([\.,]0+)?$`).test(getRuleValue(ruleName))) optionElement.selected = true
             inputSelect.appendChild(optionElement)
         }
         inputElement.appendChild(inputSelect)
@@ -216,7 +216,7 @@ class NonStrictInput {
                 inputElement.step = '0.1'
             }
         }
-        if (!this.ruleOptions.includes(getRuleValue(ruleName))) {
+        if (!this.ruleOptions.includesMatching(getRuleValue(ruleName))) {
             customOption.selected = true
             inputText.value = getRuleValue(ruleName)
         } else {

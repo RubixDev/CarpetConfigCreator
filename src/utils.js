@@ -22,6 +22,14 @@ Array.prototype.last = function () {
     return this[this.length - 1]
 }
 
+/* Use case specific */
+Array.prototype.includesMatching = function (testValue) {
+    for (const e of this) {
+        if (new RegExp(`^${e}([\.,]0+)?$`).test(testValue)) return true
+    }
+    return false
+}
+
 // General
 function print(...data) {
     console.log(...data)
@@ -76,10 +84,10 @@ function setRuleValue(ruleName, value) {
 }
 
 function getRuleValue(ruleName) {
-    return data[getSelectedMod().id].rules[ruleName].value
+    return getSelectedMod().rules[ruleName].value
 }
 
 function updateResetButton(ruleName) {
     const resetButton = document.getElementById(ruleName + '__reset')
-    resetButton.disabled = getSelectedMod().rules[ruleName].value === defaultValues[ruleName]
+    resetButton.disabled = new RegExp(`^${getRuleValue(ruleName)}([\.,]0+)?$`).test(defaultValues[ruleName])
 }
