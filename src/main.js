@@ -23,7 +23,14 @@ let defaultValues = {}
 let data = {}
 
 window.onload = async function () {
-    // Parse markdown rule lists
+    await fetchRules()
+
+    updateModRadios()
+    updateCategoryRadios()
+    updateRuleList()
+}
+
+async function fetchRules() {
     for (const [modId, mod] of modInfo.entries()) {
         data[modId] = new Mod(modId, mod.name, {})
         await fetch(mod.url)
@@ -44,8 +51,9 @@ window.onload = async function () {
     }
     defaultValues = defaultValues.sorted()
     print('Parsed default values', defaultValues)
+}
 
-    // Create radio buttons for the mods
+function updateModRadios() {
     const modButtonDiv = document.getElementById('radioButtons').firstElementChild
 
     for (let modIndex = 0; modIndex < data.keys().length; modIndex++) {
@@ -63,17 +71,10 @@ window.onload = async function () {
         label.innerText = mod.name
         modButtonDiv.appendChild(label)
     }
-
-    addRadioChangeListener(document.getElementsByName('mod'), updateCategories)
-
-    // Create radio buttons for the categories
-    updateCategories()
-
-    // Create list with rules
-    updateRuleList()
+    addRadioChangeListener(document.getElementsByName('mod'), updateCategoryRadios)
 }
 
-function updateCategories() {
+function updateCategoryRadios() {
     const categoryButtonDiv = document.getElementById('radioButtons').lastElementChild
     categoryButtonDiv.innerHTML = ''
 
