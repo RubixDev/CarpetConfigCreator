@@ -27,6 +27,15 @@ function print(...data) {
     console.log(...data)
 }
 
+function alertPrint(message = undefined) {
+    print(message)
+    if (message === undefined) {
+        alert()
+    } else {
+        alert(message)
+    }
+}
+
 function addRadioChangeListener(radioButtons, func) {
     for (const radioButton of radioButtons) {
         radioButton.addEventListener('click', function () {
@@ -62,11 +71,15 @@ function getSelectedCategory() {
 }
 
 function setRuleValue(ruleName, value) {
-    if (value === '') return
     data[getSelectedMod().id].rules[ruleName].value = value
     print(`Set value of rule ${ruleName} to ${value}`)
 }
 
 function getRuleValue(ruleName) {
     return data[getSelectedMod().id].rules[ruleName].value
+}
+
+function updateResetButton(ruleName) {
+    const resetButton = document.getElementById(ruleName + '__reset')
+    resetButton.disabled = getSelectedMod().rules[ruleName].value === defaultValues[ruleName]
 }

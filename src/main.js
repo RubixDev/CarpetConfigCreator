@@ -55,7 +55,7 @@ window.onload = async function () {
         input.type = 'radio'
         input.id = mod.id
         input.name = 'mod'
-        if (modIndex === 0) input.setAttribute('checked', '')
+        if (modIndex === 0) input.checked = true
         modButtonDiv.appendChild(input)
 
         const label = document.createElement('label')
@@ -83,7 +83,7 @@ function updateCategories() {
     allCategoriesInput.type = 'radio'
     allCategoriesInput.id = 'all'
     allCategoriesInput.name = 'category'
-    allCategoriesInput.setAttribute('checked', '')
+    allCategoriesInput.checked = true
     categoryButtonDiv.appendChild(allCategoriesInput)
 
     const allCategoriesLabel = document.createElement('label')
@@ -119,13 +119,24 @@ function updateRuleList() {
 
         const ruleListItem = document.createElement('li')
 
-        const ruleNameElement = document.createElement('code')
-        ruleNameElement.innerText = rule.name
-        ruleListItem.appendChild(ruleNameElement)
+        const ruleNameText = document.createElement('code')
+        ruleNameText.innerText = rule.name
+        ruleListItem.appendChild(ruleNameText)
 
-        const ruleDefaultValueElement = document.createElement('span')
-        ruleDefaultValueElement.innerText = 'Default value: ' + defaultValues[rule.name]
-        ruleListItem.appendChild(ruleDefaultValueElement)
+        const ruleDefaultValueSpan = document.createElement('span')
+        ruleDefaultValueSpan.innerText = 'Default value: '
+        const ruleDefaultValueButton = document.createElement('button')
+        if (rule.value === rule.getDefaultValue()) {
+            ruleDefaultValueButton.disabled = true
+        }
+        ruleDefaultValueButton.id = rule.name + '__reset'
+        ruleDefaultValueButton.innerText = rule.getDefaultValue()
+        ruleDefaultValueButton.addEventListener('click', function () {
+            rule.input.reset()
+            ruleDefaultValueButton.disabled = true
+        })
+        ruleDefaultValueSpan.appendChild(ruleDefaultValueButton)
+        ruleListItem.appendChild(ruleDefaultValueSpan)
 
         const ruleValueInput = createRuleInputElement(rule)
         ruleListItem.appendChild(ruleValueInput)
@@ -135,108 +146,28 @@ function updateRuleList() {
 }
 
 function createRuleInputElement(rule) {
-    let input
-
     if (!['int', 'double', 'string', 'boolean'].includes(rule.type)) {
-        input = document.createElement('span')
+        const input = document.createElement('span')
         input.innerText = 'Unknown value type'
         print('Unknown value type', rule)
         return input
     }
 
     if (rule.options.length === 0) {
-        input = document.createElement('input')
-        switch (rule.type) {
-            case 'string':
-                input.type = 'text'
-                break
-            case 'double':
-                input.type = 'number'
-                input.step = '0.1'
-                break
-            default:
-                input.type = 'number'
-                break
-        }
-        input.addEventListener('input', function () {
-            setRuleValue(rule.name, input.value)
-        })
+        rule.input = new StrictNoOptionsInput(rule.name, rule.type, rule.getDefaultValue())
+        return rule.input.htmlElement()
     } else if (rule.isStrict) {
-        switch (rule.type) {
-            case 'boolean':
-                input = document.createElement('input')
-                input.type = 'checkbox'
-                if (getRuleValue(rule.name) === 'true') input.setAttribute('checked', '')
-                input.addEventListener('change', function () {
-                    setRuleValue(rule.name, input.checked.toString())
-                })
-                break
-            case 'int':
-            case 'double':
-            case 'string':
-                input = document.createElement('select')
-                for (const option of rule.options) {
-                    const optionElement = document.createElement('option')
-                    optionElement.innerText = option
-                    if (getRuleValue(rule.name) === option.toLowerCase()) optionElement.setAttribute('selected', '')
-                    input.appendChild(optionElement)
-                }
-                input.addEventListener('change', function () {
-                    setRuleValue(rule.name, input.value)
-                })
-                break
+        if (rule.type === 'boolean') {
+            rule.input = new StrictBooleanInput(rule.name, rule.getDefaultValue())
+            return rule.input.htmlElement()
+        } else {
+            rule.input = new StrictNonBooleanInput(rule.name, rule.options, rule.getDefaultValue())
+            return rule.input.htmlElement()
         }
     } else {
-        input = document.createElement('span')
-
-        const inputSelect = document.createElement('select')
-        inputSelect.innerHTML += '<option value="custom">[type a custom value]</option>'
-        const customOption = document.createElement('option')
-        customOption.value = 'custom'
-        customOption.innerText = '[type a custom value]'
-        for (const option of rule.options) {
-            const optionElement = document.createElement('option')
-            optionElement.innerText = option
-            if (new RegExp(`${option.toLowerCase()}([\.,]0+)?`).test(getRuleValue(rule.name))) optionElement.setAttribute('selected', '')
-            inputSelect.appendChild(optionElement)
-        }
-        input.appendChild(inputSelect)
-
-        const inputText = document.createElement('input')
-        switch (rule.type) {
-            case 'string':
-                inputText.type = 'text'
-                break
-            case 'double':
-                inputText.type = 'number'
-                inputText.step = '0.1'
-                break
-            default:
-                inputText.type = 'number'
-                break
-        }
-        if (!rule.options.includes(getRuleValue(rule.name))) {
-            customOption.setAttribute('selected', '')
-            inputText.value = getRuleValue(rule.name)
-        } else {
-            inputText.disabled = true
-        }
-        input.appendChild(inputText)
-
-        inputSelect.addEventListener('change', function () {
-            inputText.disabled = inputSelect.value !== 'custom'
-            if (inputSelect.value === 'custom') {
-                setRuleValue(rule.name, inputText.value)
-            } else {
-                setRuleValue(rule.name, inputSelect.value)
-            }
-        })
-        inputText.addEventListener('input', function () {
-            setRuleValue(rule.name, inputText.value)
-        })
+        rule.input = new NonStrictInput(rule.name, rule.type, rule.options, rule.getDefaultValue())
+        return rule.input.htmlElement()
     }
-
-    return input
 }
 
 function exportConfigFile() {
@@ -244,11 +175,16 @@ function exportConfigFile() {
 
     for (const mod of data.values()) {
         for (const rule of mod.rules.values()) {
-            if (rule.value === defaultValues[rule.name]) continue
+            if (rule.value === rule.getDefaultValue() || rule.value === '') continue
             out.push(`${rule.name} ${rule.value}`)
         }
     }
 
-    print(out.sort().join('\n'))
+    if (out.length === 0) {
+        alertPrint('No changes made, so config file would be empty!')
+        return
+    }
+
+    print('Exporting config file:\n\t' + out.sort().join('\n\t'))
     downloadTextFile('carpet.conf', out.join('\n'))
 }
