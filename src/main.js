@@ -113,6 +113,7 @@ function updateCategoryRadios() {
 function updateRuleList() {
     const ruleList = document.getElementById('ruleList')
     ruleList.innerHTML = ''
+    resetAllInputs()
     const selectedCategory = getSelectedCategory()
 
     for (const rule of getSelectedMod().rules.values()) {

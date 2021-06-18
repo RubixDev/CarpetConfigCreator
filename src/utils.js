@@ -91,3 +91,29 @@ function updateResetButton(ruleName) {
     const resetButton = document.getElementById(ruleName + '__reset')
     resetButton.disabled = new RegExp(`^${getRuleValue(ruleName)}([\.,]0+)?$`).test(defaultValues[ruleName])
 }
+
+function resetRuleValue(ruleName) {
+    for (const mod of data.values()) {
+        if (!mod.rules.keys().includes(ruleName)) continue
+        mod.rules[ruleName].value = defaultValues[ruleName]
+    }
+}
+
+function resetAll() {
+    for (const mod of data.values()) {
+        for (const rule of mod.rules.values()) {
+            resetRuleValue(rule.name)
+            if ([null, undefined].includes(rule.input)) continue
+            rule.input.reset()
+            updateResetButton(rule.name)
+        }
+    }
+}
+
+function resetAllInputs() {
+    for (const mod of data.values()) {
+        for (const rule of mod.rules.values()) {
+            rule.input = null
+        }
+    }
+}

@@ -87,6 +87,7 @@ class StrictBooleanInput {
     reset() {
         const inputElement = document.getElementById(this.ruleName + '__input')
         inputElement.checked = this.defaultValue === 'true'
+        resetRuleValue(this.ruleName)
     }
 
     htmlElement() {
@@ -116,6 +117,7 @@ class StrictNonBooleanInput {
         for (const option of inputElement.children) {
             option.selected = this.defaultValue === option.innerText.toLowerCase()
         }
+        resetRuleValue(this.ruleName)
     }
 
     htmlElement() {
@@ -147,6 +149,7 @@ class StrictNoOptionsInput {
     reset() {
         const inputElement = document.getElementById(this.ruleName + '__input')
         inputElement.value = this.defaultValue
+        resetRuleValue(this.ruleName)
     }
 
     htmlElement() {
@@ -186,6 +189,7 @@ class NonStrictInput {
             option.selected = new RegExp(`^${option.innerText.toLowerCase()}([\.,]0+)?$`).test(this.defaultValue)
         }
         inputElement.lastElementChild.disabled = true
+        resetRuleValue(this.ruleName)
     }
 
     htmlElement() {
