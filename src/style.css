@@ -1,0 +1,115 @@
+:root {
+    --bg: #0d1117;
+    --fg: #f0f6fc;
+    --btn-bg: #21262d;
+    --btn-fg: #c9d1d9;
+    --btn-border: #30363d;
+    --btn-border-hover: #8b949e;
+}
+
+* {
+    color: var(--fg);
+    font-family: 'Montserrat', sans-serif;
+}
+
+body {
+    margin: 1.5rem;
+    background-color: var(--bg);
+}
+
+code {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+button {
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-border);
+    border-radius: .375rem;
+    background-color: var(--btn-bg);
+    padding: .375rem 1rem;
+    vertical-align: middle;
+    cursor: pointer;
+    font-weight: 500;
+    transition-duration: .2s;
+}
+
+button:hover,
+button:focus {
+    outline: none;
+    background-color: var(--btn-border);
+    border-color: var(--btn-border-hover);
+    transition-duration: .1s;
+}
+
+button:disabled {
+    background-color: var(--bg);
+    border-color: var(--bg);
+    cursor: unset;
+}
+
+#ruleList {
+    padding: 0;
+    list-style-type: none;
+}
+
+#ruleList > li {
+    min-height: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr;
+    align-items: center;
+    justify-items: center;
+}
+
+#ruleList > li > button {
+    max-width: 20vw;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+#ruleList > li > span {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+input[type=number],
+input[type=text],
+select {
+    max-width: 20vw;
+    min-height: 2rem;
+    box-sizing: border-box;
+    background-color: var(--btn-bg);
+    padding: .375rem 1rem;
+    color: var(--btn-fg);
+    border: 1px solid var(--btn-border);
+    border-radius: .375rem;
+    font-weight: 500;
+    transition-duration: .2s;
+}
+
+input[type=number] {
+    max-width: 10vw;
+}
+
+input[type=number]:focus,
+input[type=text]:focus,
+select:focus {
+    outline: none;
+    background-color: var(--btn-border);
+    border-color: var(--btn-border-hover);
+    transition-duration: .1s;
+}
+
+select {
+    cursor: pointer;
+}
+
+input[type=checkbox] {
+    cursor: pointer;
+}
+
+input:disabled {
+    background-color: var(--bg);
+    color: var(--btn-border-hover);
+}

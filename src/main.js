@@ -125,8 +125,6 @@ function updateRuleList() {
         ruleNameText.innerText = rule.name
         ruleListItem.appendChild(ruleNameText)
 
-        const ruleDefaultValueSpan = document.createElement('span')
-        ruleDefaultValueSpan.innerText = 'Default value: '
         const ruleDefaultValueButton = document.createElement('button')
         if (rule.value === rule.getDefaultValue()) {
             ruleDefaultValueButton.disabled = true
@@ -137,8 +135,7 @@ function updateRuleList() {
             rule.input.reset()
             ruleDefaultValueButton.disabled = true
         })
-        ruleDefaultValueSpan.appendChild(ruleDefaultValueButton)
-        ruleListItem.appendChild(ruleDefaultValueSpan)
+        ruleListItem.appendChild(ruleDefaultValueButton)
 
         const ruleValueInput = createRuleInputElement(rule)
         ruleListItem.appendChild(ruleValueInput)

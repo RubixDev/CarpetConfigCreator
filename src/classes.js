@@ -213,11 +213,11 @@ class NonStrictInput {
 
         const inputText = document.createElement('input')
         if (this.ruleType === 'string') {
-            inputElement.type = 'text'
+            inputText.type = 'text'
         } else {
-            inputElement.type = 'number'
+            inputText.type = 'number'
             if (this.ruleType === 'double') {
-                inputElement.step = '0.1'
+                inputText.step = '0.1'
             }
         }
         if (!this.ruleOptions.includesMatching(getRuleValue(ruleName))) {
