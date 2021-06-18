@@ -18,6 +18,14 @@ Object.prototype.sorted = function () {
         }, {})
 }
 
+String.prototype.removeTrailingSpaces = function () {
+    let out = this
+    while (out.slice(-1) === ' ') {
+        out = out.slice(0, -1)
+    }
+    return out
+}
+
 Array.prototype.last = function () {
     return this[this.length - 1]
 }

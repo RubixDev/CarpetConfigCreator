@@ -19,13 +19,15 @@ class Mod {
 }
 
 class Rule {
-    constructor(type, name, value, options, isStrict, categories, input = undefined) {
+    constructor(type, name, value, options, isStrict, categories, description, extraDescription = undefined, input = undefined) {
         this.type = type
         this.name = name
         this.value = value
         this.options = options
         this.isStrict = isStrict
         this.categories = categories
+        this.description = description
+        this.extraDescription = extraDescription
         this.input = input
     }
 
@@ -38,23 +40,23 @@ class Rule {
     }
 
     static fromMarkdown(markdown) {
-        let type = markdown
+        const type = markdown
             .split('Type: ')
             .last()
             .split('\n')[0]
             .replaceAll('`', '')
             .replaceAll(' ', '')
             .toLowerCase()
-        let name = markdown
+        const name = markdown
             .split('\n')[0]
-        let value = markdown
+        const value = markdown
             .split('Default value: ')
             .last()
             .split('\n')[0]
             .replaceAll('`', '')
             .replaceAll(' ', '')
             .toLowerCase()
-        let options = markdown
+        const options = markdown
             .split('options: ')
             .last()
             .split('\n')[0]
@@ -62,12 +64,12 @@ class Rule {
             .split(', ')
             .map(option => option.replaceAll(' ', ''))
             .filter(option => option.length > 0)
-        let strict = markdown
+        const strict = markdown
             .split(' options')[0]
             .split(' ')
             .last()
             .toLowerCase() === 'required'
-        let categories = markdown
+        const categories = markdown
             .split('Categories: ')
             .last()
             .split('\n')[0]
@@ -77,8 +79,18 @@ class Rule {
             .split(',')
             .filter(category => !excludedCategories.includes(category))  // Filter out categories of whole mods
             .map(category => category.charAt(0).toUpperCase() + category.slice(1))  // Capitalize every first letter
+        const description = markdown
+            .split('\n')[1]
+            .removeTrailingSpaces()
+        const extraDescription = markdown
+            .replace(description, '')
+            .replace(/.+\s*\n/, '')
+            .split(/\n[*-]\s/)[0]
+            .split('\n')
+            .map(line => line.removeTrailingSpaces())
+            .join('\n')
 
-        return new Rule(type, name, value, options, strict, categories)
+        return new Rule(type, name, value, options, strict, categories, description, /^[*-]\s/.test(extraDescription) ? null : extraDescription)
     }
 }
 
