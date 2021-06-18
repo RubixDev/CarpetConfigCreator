@@ -123,6 +123,8 @@ function updateRuleList() {
 
         const ruleNameText = document.createElement('code')
         ruleNameText.innerText = rule.name
+        ruleNameText.setAttribute('tooltip', rule.description + (rule.extraDescription === null ? '' : `\n\n${rule.extraDescription}`))
+        ruleNameText.setAttribute('tooltip-location', 'right')
         ruleListItem.appendChild(ruleNameText)
 
         const ruleDefaultValueButton = document.createElement('button')

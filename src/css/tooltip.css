@@ -28,6 +28,7 @@
   width: -moz-max-content;
   border-radius: .375rem;
   font-size: .875rem;
+  font-family: 'Montserrat', sans-serif;
   background-color: #3b4850e6;
   background-image: linear-gradient(30deg, #3b485070, #3b444b70, #3c525870);
   box-shadow: 0 0 1.5rem #0003;
@@ -47,11 +48,11 @@
   border-color: #374046e6 transparent transparent transparent;
   transition-duration: 0s;
   /* If the mouse leaves the element,
-                                the transition effects for the
-                                tooltip arrow are "turned off" */
+     the transition effects for the
+     tooltip arrow are "turned off" */
   transform-origin: top;
   /* Orientation setting for the
-                                slide-down effect */
+     slide-down effect */
   transform: translateX(-50%) scaleY(0);
 }
 
@@ -70,8 +71,8 @@
 }
 
 /*
-    Arrow slide down effect only on mouseenter (NOT on mouseleave)
-  */
+  Arrow slide down effect only on mouseenter (NOT on mouseleave)
+*/
 
 [tooltip]:hover:after {
   transition-delay: 0.5s;
