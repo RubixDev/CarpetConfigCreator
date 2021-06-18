@@ -126,7 +126,7 @@ function updateRuleList() {
         ruleListItem.appendChild(ruleNameText)
 
         const ruleDefaultValueButton = document.createElement('button')
-        if (rule.value === rule.getDefaultValue()) {
+        if (rule.isDefaultValue()) {
             ruleDefaultValueButton.disabled = true
         }
         ruleDefaultValueButton.id = rule.name + '__reset'
@@ -174,7 +174,7 @@ function exportConfigFile() {
 
     for (const mod of data.values()) {
         for (const rule of mod.rules.values()) {
-            if (rule.value === rule.getDefaultValue() || rule.value === '') continue
+            if (rule.isDefaultValue() || rule.value === '') continue
             out.push(`${rule.name} ${rule.value}`)
         }
     }

@@ -22,10 +22,9 @@ Array.prototype.last = function () {
     return this[this.length - 1]
 }
 
-/* Use case specific */
-Array.prototype.includesMatching = function (testValue) {
+Array.prototype.includesValue = function (testValue) {
     for (const e of this) {
-        if (new RegExp(`^${e}([\.,]0+)?$`).test(testValue)) return true
+        if (testRuleDefaultValue(e, testValue)) return true
     }
     return false
 }
@@ -89,7 +88,7 @@ function getRuleValue(ruleName) {
 
 function updateResetButton(ruleName) {
     const resetButton = document.getElementById(ruleName + '__reset')
-    resetButton.disabled = new RegExp(`^${getRuleValue(ruleName)}([\.,]0+)?$`).test(defaultValues[ruleName])
+    resetButton.disabled = testRuleDefaultValue(getRuleValue(ruleName), defaultValues[ruleName])
 }
 
 function resetRuleValue(ruleName) {
@@ -116,4 +115,8 @@ function resetAllInputs() {
             rule.input = null
         }
     }
+}
+
+function testRuleDefaultValue(testValue, defaultValue) {
+    return new RegExp(`^${testValue}([.,]0+)?$`).test(defaultValue)
 }
