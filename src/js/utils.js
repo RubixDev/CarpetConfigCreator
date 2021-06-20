@@ -87,11 +87,8 @@ function getSelectedMod() {
 }
 
 function getSelectedCategory() {
-    for (const category of getSelectedMod().getCategories()) {
-        if (document.getElementById(category.toLowerCase()).checked) return category
-    }
-    if (document.getElementById('all').checked) return 'all'
-    return null
+    print(document.getElementById('selections').lastElementChild.value)
+    return document.getElementById('selections').lastElementChild.value
 }
 
 function setRuleValue(ruleName, value) {

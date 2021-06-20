@@ -33,8 +33,10 @@ window.onload = async function () {
     await fetchRules()
 
     updateModRadios()
-    updateCategoryRadios()
+    updateCategorySelect()
     updateruleTable()
+
+    document.getElementById('selections').lastElementChild.addEventListener('change', updateruleTable)
 
     addTooltipHoverListeners()
 }
@@ -65,7 +67,7 @@ async function fetchRules() {
 }
 
 function updateModRadios() {
-    const modButtonDiv = document.getElementById('radioButtons').firstElementChild
+    const modButtonDiv = document.getElementById('selections').firstElementChild
 
     for (let modIndex = 0; modIndex < data.keys().length; modIndex++) {
         const mod = data[data.keys()[modIndex]]
@@ -82,42 +84,25 @@ function updateModRadios() {
         label.innerText = mod.name
         modButtonDiv.appendChild(label)
     }
-    addRadioChangeListener(document.getElementsByName('mod'), updateCategoryRadios)
+    addRadioChangeListener(document.getElementsByName('mod'), updateCategorySelect)
 }
 
-function updateCategoryRadios() {
-    const categoryButtonDiv = document.getElementById('radioButtons').lastElementChild
-    categoryButtonDiv.innerHTML = ''
+function updateCategorySelect() {
+    const categorySelect = document.getElementById('selections').lastElementChild
+    categorySelect.innerHTML = ''
 
     const modCategories = getSelectedMod().getCategories()
 
-    const allCategoriesInput = document.createElement('input')
-    allCategoriesInput.type = 'radio'
-    allCategoriesInput.id = 'all'
-    allCategoriesInput.name = 'category'
-    allCategoriesInput.checked = true
-    categoryButtonDiv.appendChild(allCategoriesInput)
+    const allCategoriesOption = document.createElement('option')
+    allCategoriesOption.selected = true
+    allCategoriesOption.innerText = 'All'
+    categorySelect.appendChild(allCategoriesOption)
 
-    const allCategoriesLabel = document.createElement('label')
-    allCategoriesLabel.htmlFor = 'all'
-    allCategoriesLabel.innerText = 'All'
-    categoryButtonDiv.appendChild(allCategoriesLabel)
-
-    for (let categoryIndex = 0; categoryIndex < modCategories.length; categoryIndex++) {
-        const category = modCategories[categoryIndex]
-
-        const input = document.createElement('input')
-        input.type = 'radio'
-        input.id = category.toLowerCase()
-        input.name = 'category'
-        categoryButtonDiv.appendChild(input)
-
-        const label = document.createElement('label')
-        label.htmlFor = category.toLowerCase()
-        label.innerText = category
-        categoryButtonDiv.appendChild(label)
+    for (const category of modCategories) {
+        const categoryOption = document.createElement('option')
+        categoryOption.innerText = category
+        categorySelect.appendChild(categoryOption)
     }
-    addRadioChangeListener(document.getElementsByName('category'), updateruleTable)
     updateruleTable()
 }
 
@@ -128,7 +113,7 @@ function updateruleTable() {
     const selectedCategory = getSelectedCategory()
 
     for (const rule of getSelectedMod().rules.values()) {
-        if (selectedCategory !== 'all' && !rule.categories.includes(selectedCategory)) continue
+        if (selectedCategory !== 'All' && !rule.categories.includes(selectedCategory)) continue
 
         const ruleTableRow = document.createElement('tr')
 
