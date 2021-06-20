@@ -79,20 +79,31 @@ function downloadTextFile(filename, content) {
 }
 
 // Website specific
+function getAllRules() {
+    const out = {}
+    for (const mod of data.values()) {
+        for (const [ruleName, rule] of mod.rules.entries()) {
+            out[ruleName] = rule
+        }
+    }
+    return out.sorted()
+}
+
 function getSelectedMod() {
-    for (const modId of data.keys()) {
-        if (document.getElementById(modId).checked) return data[modId]
+    for (const mod of document.getElementsByName('mod')) {
+        if (!mod.checked) continue
+        if (mod.id === 'all') return new Mod('all', 'All', getAllRules())
+        return data[mod.id]
     }
     return null
 }
 
 function getSelectedCategory() {
-    print(document.getElementById('selections').lastElementChild.value)
     return document.getElementById('selections').lastElementChild.value
 }
 
 function setRuleValue(ruleName, value) {
-    data[getSelectedMod().id].rules[ruleName].value = value
+    getSelectedMod().rules[ruleName].value = value
     print(`Set value of rule ${ruleName} to ${value}`)
 }
 

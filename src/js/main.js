@@ -34,7 +34,6 @@ window.onload = async function () {
 
     updateModRadios()
     updateCategorySelect()
-    updateruleTable()
 
     document.getElementById('selections').lastElementChild.addEventListener('change', updateruleTable)
 
@@ -69,14 +68,23 @@ async function fetchRules() {
 function updateModRadios() {
     const modButtonDiv = document.getElementById('selections').firstElementChild
 
-    for (let modIndex = 0; modIndex < data.keys().length; modIndex++) {
-        const mod = data[data.keys()[modIndex]]
+    const allModsInput = document.createElement('input')
+    allModsInput.type = 'radio'
+    allModsInput.id = 'all'
+    allModsInput.name = 'mod'
+    allModsInput.checked = true
+    modButtonDiv.appendChild(allModsInput)
 
+    const allModsLabel = document.createElement('label')
+    allModsLabel.htmlFor = 'all'
+    allModsLabel.innerText = 'All'
+    modButtonDiv.appendChild(allModsLabel)
+
+    for (const mod of data.values()) {
         const input = document.createElement('input')
         input.type = 'radio'
         input.id = mod.id
         input.name = 'mod'
-        if (modIndex === 0) input.checked = true
         modButtonDiv.appendChild(input)
 
         const label = document.createElement('label')
