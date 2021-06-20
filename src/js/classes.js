@@ -90,8 +90,18 @@ class Rule {
             .split('\n')
             .map(line => line.removeTrailingSpaces())
             .join('\n')
+            .replaceAll(/\[(.+?)\]\(.+?\)/g, '$1')
 
-        return new Rule(type, name, value, options, strict, categories, description, /^[*-]\s/.test(extraDescription) ? null : extraDescription)
+        return new Rule(
+            type,
+            name,
+            value,
+            options,
+            strict,
+            categories,
+            description.replaceAll(/\[(.+?)\]\(.+?\)/g, '$1'),
+            /^[*-]\s/.test(extraDescription) ? null : extraDescription
+        )
     }
 }
 
