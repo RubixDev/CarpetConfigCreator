@@ -40,6 +40,7 @@ class Rule {
     }
 
     static fromMarkdown(markdown) {
+        markdown = markdown.replaceAll('\n\n', '\n')
         const type = markdown
             .split('Type: ')
             .last()

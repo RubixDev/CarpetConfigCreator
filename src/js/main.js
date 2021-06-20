@@ -1,4 +1,4 @@
-const excludedCategories = ['rug', 'extras']
+const excludedCategories = ['rug', 'extras', 'tis']
 
 const modInfo = {
     carpet: {
@@ -15,6 +15,13 @@ const modInfo = {
         url: 'https://raw.githubusercontent.com/RubixDev/fabric-rug/1.17/README.md',
         splitString: '###',
         name: 'Rug'
+    },
+    tis: {
+        url: 'https://raw.githubusercontent.com/TISUnion/Carpet-TIS-Addition/master/README.md',
+        splitString: '##',
+        name: 'TIS Addition',
+        startSplit: '# Rule List',
+        endSplit: '---------'
     }
 }
 
@@ -38,6 +45,8 @@ async function fetchRules() {
         await fetch(mod.url)
             .then(r => r.text())
             .then(r => {
+                if (mod.startSplit) r = r.split(mod.startSplit).last()
+                if (mod.endSplit) r = r.split(mod.endSplit)[0]
                 for (const rule of r.split(mod.splitString + ' ').slice(1)) {
                     const parsedRule = Rule.fromMarkdown(rule)
                     data[modId].rules[parsedRule.name] = parsedRule
