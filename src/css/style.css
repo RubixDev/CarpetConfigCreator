@@ -21,6 +21,10 @@ code {
     font-family: 'JetBrains Mono', monospace;
 }
 
+table {
+    width: 100%;
+}
+
 button {
     color: var(--btn-fg);
     border: 1px solid var(--btn-border);
@@ -47,27 +51,19 @@ button:disabled {
     cursor: unset;
 }
 
-#ruleList {
+#ruleTable {
     padding: 0;
     list-style-type: none;
 }
 
-#ruleList > li {
-    min-height: 4rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr 2fr;
-    align-items: center;
-    justify-items: center;
-}
-
-#ruleList > li > button {
+#ruleTable > tr > td > button {
     max-width: 20vw;
     box-sizing: border-box;
     text-overflow: ellipsis;
     overflow: hidden;
 }
 
-#ruleList > li > span {
+#ruleTable > tr > td > span {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
@@ -76,7 +72,6 @@ button:disabled {
 input[type=number],
 input[type=text],
 select {
-    max-width: 20vw;
     min-height: 2rem;
     box-sizing: border-box;
     background-color: var(--btn-bg);
@@ -86,10 +81,6 @@ select {
     border-radius: .375rem;
     font-weight: 500;
     transition-duration: .2s;
-}
-
-input[type=number] {
-    max-width: 10vw;
 }
 
 input[type=number]:focus,

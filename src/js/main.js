@@ -27,7 +27,7 @@ window.onload = async function () {
 
     updateModRadios()
     updateCategoryRadios()
-    updateRuleList()
+    updateruleTable()
 }
 
 async function fetchRules() {
@@ -106,27 +106,30 @@ function updateCategoryRadios() {
         label.innerText = category
         categoryButtonDiv.appendChild(label)
     }
-    addRadioChangeListener(document.getElementsByName('category'), updateRuleList)
-    updateRuleList()
+    addRadioChangeListener(document.getElementsByName('category'), updateruleTable)
+    updateruleTable()
 }
 
-function updateRuleList() {
-    const ruleList = document.getElementById('ruleList')
-    ruleList.innerHTML = ''
+function updateruleTable() {
+    const ruleTable = document.getElementById('ruleTable')
+    ruleTable.innerHTML = '<tr><th>Rule Name</th><th>Default value</th><th>Input</th></tr>'
     resetAllInputs()
     const selectedCategory = getSelectedCategory()
 
     for (const rule of getSelectedMod().rules.values()) {
         if (selectedCategory !== 'all' && !rule.categories.includes(selectedCategory)) continue
 
-        const ruleListItem = document.createElement('li')
+        const ruleTableRow = document.createElement('tr')
 
+        const ruleNameTableData = document.createElement('td')
         const ruleNameText = document.createElement('code')
         ruleNameText.innerText = rule.name
         ruleNameText.setAttribute('tooltip', rule.description + (rule.extraDescription === null ? '' : `\n\n${rule.extraDescription}`))
         ruleNameText.setAttribute('tooltip-location', 'right')
-        ruleListItem.appendChild(ruleNameText)
+        ruleNameTableData.appendChild(ruleNameText)
+        ruleTableRow.appendChild(ruleNameTableData)
 
+        const ruleDefaultValueTableData = document.createElement('td')
         const ruleDefaultValueButton = document.createElement('button')
         if (rule.isDefaultValue()) {
             ruleDefaultValueButton.disabled = true
@@ -137,12 +140,14 @@ function updateRuleList() {
             rule.input.reset()
             ruleDefaultValueButton.disabled = true
         })
-        ruleListItem.appendChild(ruleDefaultValueButton)
+        ruleDefaultValueTableData.appendChild(ruleDefaultValueButton)
+        ruleTableRow.appendChild(ruleDefaultValueTableData)
 
-        const ruleValueInput = createRuleInputElement(rule)
-        ruleListItem.appendChild(ruleValueInput)
+        const ruleInputTableData = document.createElement('td')
+        ruleInputTableData.appendChild(createRuleInputElement(rule))
+        ruleTableRow.appendChild(ruleInputTableData)
 
-        ruleList.appendChild(ruleListItem)
+        ruleTable.appendChild(ruleTableRow)
     }
 }
 
