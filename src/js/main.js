@@ -28,6 +28,8 @@ window.onload = async function () {
     updateModRadios()
     updateCategoryRadios()
     updateruleTable()
+
+    addTooltipHoverListeners()
 }
 
 async function fetchRules() {
@@ -173,6 +175,17 @@ function createRuleInputElement(rule) {
     } else {
         rule.input = new NonStrictInput(rule.name, rule.type, rule.options, rule.getDefaultValue())
         return rule.input.htmlElement()
+    }
+}
+
+function addTooltipHoverListeners() {
+    for (const tooltipElement of document.getElementsByAttribute('tooltip')) {
+        tooltipElement.addEventListener('mouseover', function () {
+            tooltipElement.style.zIndex = 100
+        })
+        tooltipElement.addEventListener('mouseout', function () {
+            tooltipElement.style.zIndex = 10
+        })
     }
 }
 

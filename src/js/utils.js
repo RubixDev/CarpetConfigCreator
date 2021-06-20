@@ -26,6 +26,15 @@ String.prototype.removeTrailingSpaces = function () {
     return out
 }
 
+Document.prototype.getElementsByAttribute = function (attributeName) {
+    const out = []
+    for (const element of document.getElementsByTagName('*')) {
+        if (!element.hasAttribute(attributeName)) continue
+        out.push(element)
+    }
+    return out
+}
+
 Array.prototype.last = function () {
     return this[this.length - 1]
 }
