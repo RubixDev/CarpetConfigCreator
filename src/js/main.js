@@ -128,6 +128,12 @@ function updateruleTable() {
         ruleNameText.innerText = rule.name
         ruleNameText.setAttribute('tooltip', rule.description + (rule.extraDescription === null ? '' : `\n\n${rule.extraDescription}`))
         ruleNameText.setAttribute('tooltip-location', 'right')
+        ruleNameText.addEventListener('mouseover', function () {
+            ruleNameText.style.zIndex = 100
+        })
+        ruleNameText.addEventListener('mouseout', function () {
+            ruleNameText.style.zIndex = 10
+        })
         ruleNameTableData.appendChild(ruleNameText)
         ruleTableRow.appendChild(ruleNameTableData)
 
