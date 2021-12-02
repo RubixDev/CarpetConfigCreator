@@ -90,16 +90,12 @@ function getAllRules() {
 }
 
 function getSelectedMod() {
-    for (const mod of document.getElementsByName('mod')) {
-        if (!mod.checked) continue
-        if (mod.id === 'all') return new Mod('all', 'All', getAllRules())
-        return data[mod.id]
-    }
-    return null
+    const mod = document.getElementById('modSelect').value
+    return mod === 'all' ? new Mod('all', 'All', getAllRules()) : data[mod]
 }
 
 function getSelectedCategory() {
-    return document.getElementById('selections').lastElementChild.value
+    return document.getElementById('categorySelect').value
 }
 
 function setRuleValue(ruleName, value) {

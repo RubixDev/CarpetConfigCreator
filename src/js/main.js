@@ -27,6 +27,11 @@ const modInfo = {
         url: 'https://raw.githubusercontent.com/RubixDev/CarpetGamerules/1.18/README.md',
         splitString: '###',
         name: 'CarpetGamerules'
+    },
+    minitweaks: {
+        url: 'https://raw.githubusercontent.com/manyrandomthings/minitweaks/1.18/README.md',
+        splitString: '##',
+        name: 'minitweaks'
     }
 }
 
@@ -37,10 +42,10 @@ let data = {}
 window.onload = async function () {
     await fetchRules()
 
-    updateModRadios()
+    updateModSelect()
     updateCategorySelect()
 
-    document.getElementById('selections').lastElementChild.addEventListener('change', updateruleTable)
+    document.getElementById('categorySelect').addEventListener('change', updateRuleTable)
 
     addTooltipHoverListeners()
 }
@@ -70,38 +75,27 @@ async function fetchRules() {
     print('Parsed default values', defaultValues)
 }
 
-function updateModRadios() {
-    const modButtonDiv = document.getElementById('selections').firstElementChild
+function updateModSelect() {
+    const modSelect = document.getElementById('modSelect')
 
-    const allModsInput = document.createElement('input')
-    allModsInput.type = 'radio'
-    allModsInput.id = 'all'
-    allModsInput.name = 'mod'
-    allModsInput.checked = true
-    modButtonDiv.appendChild(allModsInput)
-
-    const allModsLabel = document.createElement('label')
-    allModsLabel.htmlFor = 'all'
-    allModsLabel.innerText = 'All'
-    modButtonDiv.appendChild(allModsLabel)
+    const allModsOption = document.createElement('option')
+    allModsOption.value = 'all'
+    allModsOption.innerText = 'All'
+    allModsOption.selected = true
+    modSelect.appendChild(allModsOption)
 
     for (const mod of data.values()) {
-        const input = document.createElement('input')
-        input.type = 'radio'
-        input.id = mod.id
-        input.name = 'mod'
-        modButtonDiv.appendChild(input)
-
-        const label = document.createElement('label')
-        label.htmlFor = mod.id
-        label.innerText = mod.name
-        modButtonDiv.appendChild(label)
+        const modOption = document.createElement('option')
+        modOption.innerText = mod.name
+        modOption.value = mod.id
+        modSelect.appendChild(modOption)
     }
-    addRadioChangeListener(document.getElementsByName('mod'), updateCategorySelect)
+
+    modSelect.addEventListener('change', updateCategorySelect)
 }
 
 function updateCategorySelect() {
-    const categorySelect = document.getElementById('selections').lastElementChild
+    const categorySelect = document.getElementById('categorySelect')
     categorySelect.innerHTML = ''
 
     const modCategories = getSelectedMod().getCategories()
@@ -116,10 +110,10 @@ function updateCategorySelect() {
         categoryOption.innerText = category
         categorySelect.appendChild(categoryOption)
     }
-    updateruleTable()
+    updateRuleTable()
 }
 
-function updateruleTable() {
+function updateRuleTable() {
     const ruleTable = document.getElementById('ruleTable')
     ruleTable.innerHTML = '<tr><th>Rule Name</th><th>Default value</th><th>Input</th></tr>'
     resetAllInputs()
