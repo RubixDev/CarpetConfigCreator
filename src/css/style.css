@@ -104,3 +104,15 @@ input:disabled {
     background-color: var(--bg);
     color: var(--btn-border-hover);
 }
+
+#selections {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .8rem 1.2rem;
+    align-items: center;
+    text-align: end;
+}
+
+#selections > select {
+    max-width: 12rem;
+}
