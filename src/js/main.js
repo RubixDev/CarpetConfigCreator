@@ -7,21 +7,26 @@ const modInfo = {
         name: 'Carpet'
     },
     carpetExtra: {
-        url: 'https://raw.githubusercontent.com/gnembon/carpet-extra/1.17/README.md',
+        url: 'https://raw.githubusercontent.com/gnembon/carpet-extra/future/README.md',
         splitString: '##',
         name: 'Carpet Extra'
     },
     rug: {
-        url: 'https://raw.githubusercontent.com/RubixDev/fabric-rug/1.17/README.md',
+        url: 'https://raw.githubusercontent.com/RubixDev/Rug/1.18/README.md',
         splitString: '###',
         name: 'Rug'
     },
-    tis: {
-        url: 'https://raw.githubusercontent.com/TISUnion/Carpet-TIS-Addition/master/README.md',
-        splitString: '##',
-        name: 'TIS Addition',
-        startSplit: '# Rule List',
-        endSplit: '---------'
+    // tis: {
+    //     url: 'https://raw.githubusercontent.com/TISUnion/Carpet-TIS-Addition/master/README.md',
+    //     splitString: '##',
+    //     name: 'TIS Addition',
+    //     startSplit: '# Rule List',
+    //     endSplit: '---------'
+    // },
+    gamerules: {
+        url: 'https://raw.githubusercontent.com/RubixDev/CarpetGamerules/1.18/README.md',
+        splitString: '###',
+        name: 'CarpetGamerules'
     }
 }
 
