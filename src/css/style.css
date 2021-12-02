@@ -111,8 +111,36 @@ input:disabled {
     gap: .8rem 1.2rem;
     align-items: center;
     text-align: end;
+    margin-block: 1rem;
 }
 
 #selections > select {
     max-width: 12rem;
+}
+
+#buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+#helpModal {
+    background-color: var(--btn-bg);
+    border: 1px solid var(--btn-border);
+    border-radius: .375rem;
+    position: fixed;
+    z-index: 1000;
+    padding: 1.5rem;
+    top: 50vh;
+    left: 50vw;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
+}
+
+#closeHelpButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
 }

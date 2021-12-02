@@ -19,9 +19,21 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&amp;display=swap">
 </head>
 <body>
+<div id="helpModal">
+    <button id="closeHelpButton" onclick="hideHelp()">X</button>
+    <ul>
+        <li>Filter the rules with the 'Mod' and 'Category' dropdowns</li>
+        <li>Set a rule value in the right most column</li>
+        <li>Reset a rule to its default value with the button in the middle column</li>
+        <li>Reset all settings to default with the 'Reset All' button at the top</li>
+        <li>See which mod and category a rule belongs to and its description by hovering over the rule name</li>
+        <li>Export a 'carpet.conf' file via the 'Export' button at the top. Place that in your world's save folder</li>
+    </ul>
+</div>
 <div id="buttons">
     <button id="exportButton" onclick="exportConfigFile()">Export</button>
     <button id="resetAllButton" onclick="resetAll()">Reset All</button>
+    <button id="helpButton" onclick="showHelp()">Help</button>
 </div>
 <div id="selections">
     <label for="modSelect">Mod:</label>

@@ -219,3 +219,15 @@ function exportConfigFile() {
     print('Exporting config file:\n\t' + out.sort().join('\n\t'))
     downloadTextFile('carpet.conf', out.join('\n'))
 }
+
+function showHelp() {
+    const modal = document.getElementById('helpModal')
+    modal.style.pointerEvents = 'all'
+    modal.style.opacity = 100
+}
+
+function hideHelp() {
+    const modal = document.getElementById('helpModal')
+    modal.style.pointerEvents = 'none'
+    modal.style.opacity = 0
+}
