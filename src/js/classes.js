@@ -19,7 +19,8 @@ class Mod {
 }
 
 class Rule {
-    constructor(type, name, value, options, isStrict, categories, description, extraDescription = undefined, input = undefined) {
+    constructor(mod, type, name, value, options, isStrict, categories, description, extraDescription = undefined, input = undefined) {
+        this.mod = mod
         this.type = type
         this.name = name
         this.value = value
@@ -39,7 +40,7 @@ class Rule {
         return new RegExp(`^${this.value}([.,]0+)?$`).test(this.getDefaultValue())
     }
 
-    static fromMarkdown(markdown) {
+    static fromMarkdown(markdown, mod) {
         markdown = markdown.replaceAll('\n\n', '\n')
         const type = markdown
             .split('Type: ')
@@ -79,7 +80,7 @@ class Rule {
             .toLowerCase()
             .split(',')
             .filter(category => !excludedCategories.includes(category))  // Filter out categories of whole mods
-            .map(category => category.charAt(0).toUpperCase() + category.slice(1))  // Capitalize every first letter
+            // .map(category => category.charAt(0).toUpperCase() + category.slice(1))  // Capitalize every first letter
         const description = markdown
             .split('\n')[1]
             .removeTrailingSpaces()
@@ -93,6 +94,7 @@ class Rule {
             .replaceAll(/\[(.+?)\]\(.+?\)/g, '$1')
 
         return new Rule(
+            mod,
             type,
             name,
             value,

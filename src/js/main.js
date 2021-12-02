@@ -1,4 +1,4 @@
-const excludedCategories = ['rug', 'extras', 'tis']
+const excludedCategories = ['rug', 'extras', 'tis', 'minitweaks', 'gamerule']
 
 const modInfo = {
     carpet: {
@@ -59,7 +59,7 @@ async function fetchRules() {
                 if (mod.startSplit) r = r.split(mod.startSplit).last()
                 if (mod.endSplit) r = r.split(mod.endSplit)[0]
                 for (const rule of r.split(mod.splitString + ' ').slice(1)) {
-                    const parsedRule = Rule.fromMarkdown(rule)
+                    const parsedRule = Rule.fromMarkdown(rule, mod.name)
                     data[modId].rules[parsedRule.name] = parsedRule
                 }
             })
@@ -127,7 +127,12 @@ function updateRuleTable() {
         const ruleNameTableData = document.createElement('td')
         const ruleNameText = document.createElement('code')
         ruleNameText.innerText = rule.name
-        ruleNameText.setAttribute('tooltip', rule.description + (rule.extraDescription === null ? '' : `\n\n${rule.extraDescription}`))
+        ruleNameText.setAttribute(
+            'tooltip',
+            'Mod: ' + rule.mod + '\n' +
+            'Categories: ' + rule.categories.join(', ') + '\n\n' +
+            rule.description + (rule.extraDescription === null ? '' : `\n\n${rule.extraDescription}`)
+        )
         ruleNameText.setAttribute('tooltip-location', 'right')
         ruleNameText.addEventListener('mouseover', function () {
             ruleNameText.style.zIndex = 100
